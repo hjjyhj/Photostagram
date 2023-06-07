@@ -1,8 +1,11 @@
 import React from 'react'
+import ListHeader from './ListHeader';
 
 const Photopage = () => {
   return (
-    <div>Photopage</div>
+    <div>
+      <ListHeader listname='Photo List'/>
+    </div>
   )
 }
 
