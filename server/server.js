@@ -5,6 +5,10 @@ const bodyParser = require('body-parser');
 const mysql = require('mysql2/promise');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const multer = require('multer');
+const photos = require('./routes/photos'); // Importing the photos routes
+
+const upload = multer({ dest: 'uploads/' });
 
 const app = express();
 app.use(cors({
@@ -28,7 +32,6 @@ app.get('/person', async (req, res) => {
   const [results] = await pool.query('SELECT * FROM person');
   res.json(results);
 });
-
 
 // sign up
 app.post('/signup', async (req, res) => {
@@ -75,6 +78,9 @@ app.post('/login', async (req, res) => {
     res.status(500).json({ detail: err.message });
   }
 });
+
+// Use photos routes
+app.use('/api/photos', photos);
 
 const port = process.env.PORT || 3002;
 app.listen(port, () => {
