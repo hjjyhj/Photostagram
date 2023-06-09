@@ -38,6 +38,7 @@ app.post('/signup', async (req, res) => {
   const {email, password } = req.body;
   const salt = bcrypt.genSaltSync(10);
   const hashedPassword = bcrypt.hashSync(password, salt);
+  console.log(`Hashed password: ${hashedPassword}`);  // Debugging line
 
   try {
     const [results] = await pool.query(
@@ -48,6 +49,8 @@ app.post('/signup', async (req, res) => {
     const token = jwt.sign({ id: results.insertId }, process.env.JWT_SECRET, {
       expiresIn: '1h',
     });
+
+    console.log(`Generated token: ${token}`);  // Debugging line
 
     res.status(201).json({ id: results.insertId, email, token });
   } catch (err) {
@@ -67,8 +70,13 @@ app.post('/login', async (req, res) => {
     const user = users[0];
     const success = await bcrypt.compare(password, user.password);
 
+    console.log(`Password check: ${success}`);  // Debugging line
+
     if (success) {
       const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+      
+      console.log(`Generated token: ${token}`);  // Debugging line
+
       res.json({ id: user.id, email: user.email, token });
     } else {
       res.status(401).json({ detail: 'Login failed' });
@@ -78,6 +86,7 @@ app.post('/login', async (req, res) => {
     res.status(500).json({ detail: err.message });
   }
 });
+
 
 // Use photos routes
 app.use('/api/photos', photos);

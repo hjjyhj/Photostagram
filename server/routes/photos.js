@@ -7,7 +7,7 @@ const { S3 } = require('aws-sdk');
 const mysql = require('mysql2/promise');
 
 const upload = multer({ dest: 'uploads/' });
-
+const jwt = require('jsonwebtoken');
 
 // MySQL db connection
 const pool = mysql.createPool({
@@ -25,15 +25,35 @@ const s3 = new S3({
   region: process.env.AWS_REGION
 });
 
+// Middleware for verifying JWT and identifying the user
+const authenticateJWT = (req, res, next) => {
+    const authHeader = req.headers.authorization;
+  
+    if (authHeader) {
+      const token = authHeader.split(' ')[1];
+  
+      jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+        if (err) {
+          return res.sendStatus(403);
+        }
+  
+        req.user = user;
+        next();
+      });
+    } else {
+      res.sendStatus(401);
+    }
+  };
+
 // multer configuration
 const storage = multer.memoryStorage();
-const multerUploads = multer({ storage }).single('photo');
+const multerUploads = multer({ storage }).single('file');
 const parser = new DatauriParser();
 
 const dataUri = req => parser.format(path.extname(req.file.originalname).toString(), req.file.buffer);
 
 // Routes
-router.post('/upload', multerUploads, async (req, res) => {
+router.post('/upload', multerUploads, authenticateJWT, async (req, res) => {
   try {
     const file = dataUri(req).content;
     const result1 = await s3.upload({
@@ -61,7 +81,7 @@ router.post('/upload', multerUploads, async (req, res) => {
   }
 });
 
-router.get('/photos', async (req, res) => {
+router.get('/photos', authenticateJWT, async (req, res) => {
   const [rows] = await pool.query(
     'SELECT imageUrl FROM photo WHERE user_id = ?',
     [req.user.id]

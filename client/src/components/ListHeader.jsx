@@ -12,6 +12,9 @@ const ListHeader = ({ listName, getData }) => {
 
     const response = await fetch(`${process.env.REACT_APP_SERVERURL}/api/photos/upload`, {
       method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${cookies.AuthToken}`, 
+      },
       body: formData,
     });
 
@@ -35,7 +38,7 @@ const ListHeader = ({ listName, getData }) => {
     <div className="list-header">
       <h1>{listName}</h1>
       <div className="list-button-container">
-        <input type="file" ref={fileInputRef} style={{ display: 'none' }} onChange={handleFileUpload} />
+        <input type="file" name="file" ref={fileInputRef} style={{ display: 'none' }} onChange={handleFileUpload} />
         <button className="create" onClick={() => fileInputRef.current.click()}>ADD NEW</button>
         <button className="signout" onClick={signOut}>SIGN OUT</button>
       </div>
@@ -43,4 +46,4 @@ const ListHeader = ({ listName, getData }) => {
   )
 }
 
-export default ListHeader 
+export default ListHeader
