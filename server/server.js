@@ -5,10 +5,8 @@ const bodyParser = require('body-parser');
 const mysql = require('mysql2/promise');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const multer = require('multer');
-const photos = require('./routes/photos'); // Importing the photos routes
-
-const upload = multer({ dest: 'uploads/' });
+const cloudinary = require('cloudinary').v2;
+const cookieParser = require('cookie-parser');
 
 const app = express();
 app.use(cors({
@@ -17,6 +15,7 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 // MySQL db connection
 const pool = mysql.createPool({
@@ -26,6 +25,55 @@ const pool = mysql.createPool({
   database: process.env.DATABASE_NAME,
   waitForConnections: true,
 });
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+})
+
+// Cloudinary upload
+app.post('/upload', async (req, res) => {
+  const fileStr = req.body.data;
+  const uploadResponse = await cloudinary.uploader.upload(fileStr, {
+    upload_preset: process.env.UPLOAD_PRESET
+  });
+
+  if (uploadResponse.error) {
+    res.status(500).json({ error: uploadResponse.error.message });
+  }
+
+  res.json({ url: uploadResponse.secure_url });
+});
+
+app.post('/addphoto', async (req, res) => {
+  try {
+    const photoUrl = req.body.url;
+
+    const authToken = req.cookies.AuthToken; // Get the auth token from the cookies
+
+    if (!authToken) {
+      return res.status(403).json({ detail: "No authorization token provided" });
+    }
+
+    // Verify and decode the token
+    let decoded;
+    try {
+      decoded = jwt.verify(authToken, process.env.JWT_SECRET);
+    } catch (err) {
+      return res.status(403).json({ detail: "Invalid authorization token" });
+    }
+
+    const userId = decoded.id; // Extract user id from the decoded information
+
+    // Rest of your code
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ detail: err.message });
+  }
+});
+
 
 // get users
 app.get('/person', async (req, res) => {

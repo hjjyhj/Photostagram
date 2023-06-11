@@ -1,28 +1,8 @@
-import React, { useRef } from 'react'
+import React from 'react'
 import { useCookies } from 'react-cookie'
 
 const ListHeader = ({ listName, getData }) => {
   const [cookies, setCookie, removeCookie] = useCookies(null)
-  const fileInputRef = useRef(null);
-
-  const handleFileUpload = async (event) => {
-    const file = event.target.files[0];
-    const formData = new FormData();
-    formData.append('file', file);
-
-    const response = await fetch(`${process.env.REACT_APP_SERVERURL}/api/photos/upload`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${cookies.AuthToken}`, 
-      },
-      body: formData,
-    });
-
-    if (response.ok) {
-      // Refresh the photo list after a new photo is uploaded
-      getData();
-    }
-  }
 
   const signOut = () => {
     try {
@@ -38,12 +18,11 @@ const ListHeader = ({ listName, getData }) => {
     <div className="list-header">
       <h1>{listName}</h1>
       <div className="list-button-container">
-        <input type="file" name="file" ref={fileInputRef} style={{ display: 'none' }} onChange={handleFileUpload} />
-        <button className="create" onClick={() => fileInputRef.current.click()}>ADD NEW</button>
+        <button className="create" onClick={() => console.log('Create')}>ADD NEW</button>
         <button className="signout" onClick={signOut}>SIGN OUT</button>
       </div>
     </div>
   )
 }
 
-export default ListHeader
+export default ListHeader 
