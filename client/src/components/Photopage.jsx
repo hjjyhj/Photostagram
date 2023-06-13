@@ -1,6 +1,10 @@
+<<<<<<< HEAD
 import React, { useEffect, useState } from 'react'
 import ListHeader from './ListHeader';
 import { useCookies } from 'react-cookie';
+=======
+import React from 'react'
+>>>>>>> parent of 834d49d (sign in/ registration working)
 
 const Photopage = () => {
   const [cookies] = useCookies(['AuthToken']);
@@ -35,6 +39,7 @@ const Photopage = () => {
   }, []);
 
   return (
+<<<<<<< HEAD
     <div>
       <ListHeader listName='Photo List' getData={getData} />
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}>
@@ -43,6 +48,9 @@ const Photopage = () => {
       ))}
       </div>
     </div>
+=======
+    <div>Photopage</div>
+>>>>>>> parent of 834d49d (sign in/ registration working)
   )
 }
 

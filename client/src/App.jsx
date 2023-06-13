@@ -4,9 +4,9 @@ import Photopage from './components/Photopage';
 import { useCookies } from 'react-cookie';
 
 const App = () => {
-  const [cookies] = useCookies(['AuthToken']); 
+  const [cookies] = useCookies(['token']); // Replace 'token' with the name of your auth token cookie
   
-  const authToken = cookies.AuthToken; 
+  const authToken = cookies.token; // Replace 'token' with the name of your auth token cookie
   
   return (
     <div className="app">
@@ -15,6 +15,5 @@ const App = () => {
     </div>
   )
 }
-
 
 export default App;
