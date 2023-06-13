@@ -1,16 +1,14 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useCookies } from 'react-cookie'
-import { useHistory } from "react-router-dom";
 
 const ListHeader = ({ listName, getData }) => {
   const [cookies, setCookie, removeCookie] = useCookies(null)
-  const history = useHistory();
 
   const signOut = () => {
     try {
       removeCookie('Email');
       removeCookie('AuthToken');
-      history.push('/login');
+      window.location.reload(); // Reload the page after signing out
     } catch (error) {
       console.error("Failed to clear cookies: ", error);
     }
@@ -19,7 +17,7 @@ const ListHeader = ({ listName, getData }) => {
   return (
     <div className="list-header">
       <h1>{listName}</h1>
-      <div className="button-container">
+      <div className="list-button-container">
         <button className="create" onClick={() => console.log('Create')}>ADD NEW</button>
         <button className="signout" onClick={signOut}>SIGN OUT</button>
       </div>

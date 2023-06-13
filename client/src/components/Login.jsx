@@ -29,6 +29,7 @@ const Login = () => {
     } else {
       setCookie('Email', data.email);
       setCookie('AuthToken', data.token);
+      setCookie('UserId', data.id); // Save the user_id in a cookie
       window.location.reload();
     }
   }
