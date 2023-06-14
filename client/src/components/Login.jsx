@@ -44,7 +44,7 @@ const Login = () => {
 
   return (
     <div className='app'>
-      <p className="login">Login</p>
+      <p className="photostagram">PhotoStagram</p>
       <div className = "inputs">
         <input 
           className='email'
@@ -69,7 +69,7 @@ const Login = () => {
           </button>
         }
         {!isLogIn && 
-          <div>
+          <div className='confirm'>
             <input 
               className='confirm-password'
               required

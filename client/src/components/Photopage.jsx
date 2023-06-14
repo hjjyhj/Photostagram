@@ -5,7 +5,7 @@ import { storage } from "./firebase";
 import { v4 } from "uuid";
 
 const Photopage = () => {
-  const [cookies, setCookie, removeCookie] = useCookies(null);
+  const [cookies, setCookie, removeCookie] = useCookies(['Email', 'AuthToken', 'UserId']);
   const [imageUpload, setImageUpload] = useState(null);
   const [imageUrls, setImageUrls] = useState([]);
 
@@ -19,26 +19,25 @@ const Photopage = () => {
     }
   }
 
-  const imagesListRef = ref(storage, "images/");
+  const imagesListRef = ref(storage, `${cookies.Email}/`);
+
+  const getImages = () => {
+    listAll(imagesListRef).then((response) => {
+      const promises = response.items.map(item => getDownloadURL(item));
+      Promise.all(promises).then(setImageUrls);
+    });
+  }
+
   const uploadFile = () => {
     if (imageUpload == null) return;
-    const imageRef = ref(storage, `images/${imageUpload.name + v4()}`);
-    uploadBytes(imageRef, imageUpload).then((snapshot) => {
-      getDownloadURL(snapshot.ref).then((url) => {
-        setImageUrls((prev) => [...prev, url]);
-      });
-    });
+    const imageRef = ref(storage, `${cookies.Email}/${imageUpload.name + v4()}`);
+    uploadBytes(imageRef, imageUpload).then(getImages);
   };
 
   useEffect(() => {
-    listAll(imagesListRef).then((response) => {
-      response.items.forEach((item) => {
-        getDownloadURL(item).then((url) => {
-          setImageUrls((prev) => [...prev, url]);
-        });
-      });
-    });
+    getImages();
   }, []);
+
 
   return (
     <div>
