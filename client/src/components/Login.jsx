@@ -43,7 +43,7 @@ const Login = () => {
   }
 
   return (
-    <div className='app'>
+    <div className='loginpage'>
       <p className="photostagram">PhotoStagram</p>
       <div className = "inputs">
         <input 

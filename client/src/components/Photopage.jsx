@@ -24,7 +24,7 @@ const Photopage = () => {
   const getImages = () => {
     listAll(imagesListRef).then((response) => {
       const promises = response.items.map(item => getDownloadURL(item));
-      Promise.all(promises).then(setImageUrls);
+      Promise.all(promises).then((urls) => setImageUrls(urls.reverse()));
     });
   }
 
@@ -40,7 +40,7 @@ const Photopage = () => {
 
 
   return (
-    <div>
+    <div className='photo-page'>
       <div className="list-header">
         <div className="list-button-container">
           <input
@@ -51,8 +51,14 @@ const Photopage = () => {
           />
           <button onClick={uploadFile}> Upload Image</button>
           <button className="signout" onClick={signOut}>SIGN OUT</button>
-          {imageUrls.map((url) => {
-            return <img src={url} />;
+        </div>
+        <div className="image-container">
+          {imageUrls.map((url, index) => {
+            return (
+              <div className="image-card" key={index}>
+                <img src={url} alt="User Upload" /> 
+              </div>
+            );
           })}
         </div>
       </div>
