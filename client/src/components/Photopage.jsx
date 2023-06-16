@@ -8,6 +8,7 @@ const Photopage = () => {
   const [cookies, setCookie, removeCookie] = useCookies(['Email', 'AuthToken', 'UserId']);
   const [imageUpload, setImageUpload] = useState(null);
   const [imageUrls, setImageUrls] = useState([]);
+  const [selectedImage, setSelectedImage] = useState(null); // new state variable
 
   const signOut = () => {
     try {
@@ -38,6 +39,10 @@ const Photopage = () => {
     getImages();
   }, []);
 
+  // Function to close the modal
+  const closeModal = () => {
+    setSelectedImage(null);
+  };
 
   return (
     <div className='photo-page'>
@@ -55,13 +60,21 @@ const Photopage = () => {
         <div className="image-container">
           {imageUrls.map((url, index) => {
             return (
-              <div className="image-card" key={index}>
+              <div className="image-card" key={index} onClick={() => setSelectedImage(url)}> {/* Add onClick here */}
                 <img src={url} alt="User Upload" /> 
               </div>
             );
           })}
         </div>
       </div>
+      
+      {/*Modal for image zooming*/}
+      {selectedImage && (
+        <div className="modal" onClick={closeModal}>
+          <img className="modal-image" src={selectedImage} alt="Selected" />
+        </div>
+      )}
+
     </div>
   );
 }
