@@ -102,6 +102,7 @@ body {
 }
 
 .image-card {
+  position: relative;
   background-color: #f5f5f5;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   transition: 0.3s;
@@ -117,7 +118,26 @@ body {
   width: 230px;
   height: 230px;
   object-fit: cover;
+  display: block;
 }
+
+.image-card button {
+  position: absolute;
+  top: 6px;  /* adjust this to move the button down */
+  right: 6px; /* adjust this to move the button to the right */
+  background-color: white;
+  color: black;
+  border: none;
+  font-size: 18px; /* adjust this to make the 'X' smaller */
+  cursor: pointer;
+  border-radius: 50%; 
+  width: 25px; /* adjust this to make the button smaller */
+  height: 25px; /* adjust this to make the button smaller */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 
 .modal {
   position: fixed;
@@ -131,7 +151,27 @@ body {
   align-items: center;
 }
 
-.modal-image {
-  max-width: 90%;
-  max-height: 90%;
+.selected-image {
+  max-width: 90%; /* Adjust this to your preference */
+  max-height: 90%; /* Adjust this to your preference */
+  object-fit: cover;
+}
+
+.delete-button {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background-color: white;
+  background-image: url('./components/deletebutton.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 15px 15px;
+  border: none;
+  cursor: pointer;
+  border-radius: 50%; 
+  width: 25px;
+  height: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

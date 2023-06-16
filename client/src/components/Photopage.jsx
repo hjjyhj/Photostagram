@@ -1,80 +1,67 @@
 import React, { useState, useEffect } from 'react';
-import { useCookies } from 'react-cookie';
-import { ref, uploadBytes, getDownloadURL, listAll } from "firebase/storage";
+import { ref, getDownloadURL, listAll, deleteObject } from "firebase/storage";
 import { storage } from "./firebase";
-import { v4 } from "uuid";
+import Navbar from './Navbar';
+import deleteIcon from './deletebutton.svg'; // add this line
 
-const Photopage = () => {
-  const [cookies, setCookie, removeCookie] = useCookies(['Email', 'AuthToken', 'UserId']);
-  const [imageUpload, setImageUpload] = useState(null);
-  const [imageUrls, setImageUrls] = useState([]);
-  const [selectedImage, setSelectedImage] = useState(null); // new state variable
-
-  const signOut = () => {
-    try {
-      removeCookie('Email');
-      removeCookie('AuthToken');
-      window.location.reload(); // Reload the page after signing out
-    } catch (error) {
-      console.error("Failed to clear cookies: ", error);
-    }
-  }
+const Photopage = ({ cookies }) => {
+  const [images, setImages] = useState([]);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const imagesListRef = ref(storage, `${cookies.Email}/`);
 
   const getImages = () => {
     listAll(imagesListRef).then((response) => {
-      const promises = response.items.map(item => getDownloadURL(item));
-      Promise.all(promises).then((urls) => setImageUrls(urls.reverse()));
+      const promises = response.items.map(async item => {
+        const url = await getDownloadURL(item).catch(err => {
+          console.error("Failed to get download URL: ", err);
+        });
+        return { url, ref: item };
+      });
+      Promise.all(promises).then((images) => {
+        setImages(images.reverse())
+      }).catch(err => {
+        console.error("Failed to get images: ", err);
+      });
     });
   }
 
-  const uploadFile = () => {
-    if (imageUpload == null) return;
-    const imageRef = ref(storage, `${cookies.Email}/${imageUpload.name + v4()}`);
-    uploadBytes(imageRef, imageUpload).then(getImages);
-  };
+  const deleteImage = (image) => {
+    deleteObject(image.ref).then(() => {
+      getImages();
+    }).catch((error) => {
+      console.error("Failed to delete image: ", error);
+    });
+  }
 
   useEffect(() => {
     getImages();
   }, []);
 
-  // Function to close the modal
   const closeModal = () => {
     setSelectedImage(null);
   };
 
   return (
     <div className='photo-page'>
+      <Navbar cookies={cookies} imagePath={`${cookies.Email}/`} setImages={setImages} />
       <div className="list-header">
-        <div className="list-button-container">
-          <input
-            type="file"
-            onChange={(event) => {
-              setImageUpload(event.target.files[0]);
-            }}
-          />
-          <button onClick={uploadFile}> Upload Image</button>
-          <button className="signout" onClick={signOut}>SIGN OUT</button>
-        </div>
         <div className="image-container">
-          {imageUrls.map((url, index) => {
+          {images.map((image, index) => {
             return (
-              <div className="image-card" key={index} onClick={() => setSelectedImage(url)}> {/* Add onClick here */}
-                <img src={url} alt="User Upload" /> 
+              <div className="image-card" key={index}>
+                <img src={image.url} onClick={() => setSelectedImage(image.url)} alt="Not found" />
+                <button className="delete-button" onClick={() => deleteImage(image)} />
               </div>
             );
           })}
         </div>
+        {selectedImage && (
+          <div className="modal" onClick={closeModal}>
+            <img src={selectedImage} className="selected-image" alt="Not found" />
+          </div>
+        )}
       </div>
-      
-      {/*Modal for image zooming*/}
-      {selectedImage && (
-        <div className="modal" onClick={closeModal}>
-          <img className="modal-image" src={selectedImage} alt="Selected" />
-        </div>
-      )}
-
     </div>
   );
 }
