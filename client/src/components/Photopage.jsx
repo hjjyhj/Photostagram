@@ -4,6 +4,7 @@ import { storage } from "./firebase";
 import Navbar from './Navbar';
 import deleteIcon from './deletebutton.svg'; // add this line
 
+
 const Photopage = ({ cookies }) => {
   const [images, setImages] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -42,9 +43,31 @@ const Photopage = ({ cookies }) => {
     setSelectedImage(null);
   };
 
+  // profile picture
+  const [profilePic, setProfilePic] = useState(null);
+
+  useEffect(() => {
+    const profilePicRef = ref(storage, `profile/${cookies.Email}/profile_pic`);
+    getDownloadURL(profilePicRef)
+      .then(url => {
+        setProfilePic(url);
+      })
+      .catch(err => {
+        console.error("Failed to get profile pic: ", err);
+      });
+    getImages();
+  }, []);
+  
+
   return (
     <div className='photo-page'>
       <Navbar cookies={cookies} imagePath={`${cookies.Email}/`} setImages={setImages} />
+      <div className="profile-container">
+      {profilePic 
+        ? <img src={profilePic} className="profile-pic" alt="Profile pic" onClick={() => setSelectedImage(profilePic)} />
+        : <div className="profile-pic-placeholder"></div>}
+      <div className="username"><p>{(cookies.Email.split('@')[0].charAt(0).toUpperCase() + cookies.Email.split('@')[0].slice(1))}</p></div>
+    </div>
       <div className="list-header">
         <div className="image-container">
           {images.map((image, index) => {

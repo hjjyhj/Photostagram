@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
 body {
   margin: 0;
   padding: 0;
@@ -174,4 +175,86 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.navbar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 200px;
+  background-color: black;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  padding: 50px 0;
+  border-right: 1px solid gray; /* added this line for the border */
+}
+
+.navbar button {
+  /* margin: 20px 0; */
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 30px;
+  font-family: "Open Sans", sans-serif; /* Make sure you have imported this font */
+  font-size: 18px;
+  color: white;
+  background-color: black;
+  border: none;
+}
+.photo-page {
+  margin-left: 200px; /* Add this to move the page content to the right */
+}
+
+/* Hidden file input element styling */
+.file-input {
+  display: none;
+}
+.profile-container {
+  display: flex;
+  align-items: center;
+}
+
+.username {
+  margin-left: 60px;
+  font-size: 50px;
+  color: white;
+  font-family: 'Pacifico', cursive;
+}
+
+.profile-pic {
+  width: 200px; /* adjust size as needed */
+  height: 200px; /* adjust size as needed */
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 40px;
+  margin-left: 290px;
+  border: 2px solid white; /* add this line for the white border */
+  background-color: black;
+}
+
+.profile-pic-placeholder {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 40px;
+  margin-left: 100px;
+  border: 2px solid white;
+  background-color: white;
+}
+
+.navbar-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.navbar-text {
+  font-family: 'Pacifico', cursive; /* one of the font suggestions */
+  font-size: 30px;
+  color: #ffffff;
+  margin-bottom: 50px;
 }
