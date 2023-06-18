@@ -12,6 +12,7 @@ app.use(cors({
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
 app.use(bodyParser.json());
 
 // MySQL db connection

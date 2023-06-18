@@ -1,13 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
 import { useCookies } from 'react-cookie';
 import { ref, uploadBytes } from "firebase/storage";
 import { storage } from "./firebase";
 import { v4 } from "uuid";
-import { ReactComponent as CameraIcon } from './camera.svg';
 
 const Navbar = ({ cookies, imagePath, setImages }) => {
     const [, , removeCookie] = useCookies(['Email', 'AuthToken', 'UserId']); 
-  
+    const [currentEmail,] = useCookies(['Email']); 
+    const [isSearchVisible, setIsSearchVisible] = useState(false);
+    const [users, setUsers] = useState([]);
+
+    // Fetch users when component mounts
+    useEffect(() => {
+      fetch(`${process.env.REACT_APP_SERVERURL}/person`)
+        .then(response => response.json())
+        .then(data => setUsers(data))
+        .catch(err => console.error(err));
+    }, []);
+
     const signOut = () => {
       try {
         removeCookie('Email');
@@ -65,11 +75,18 @@ const Navbar = ({ cookies, imagePath, setImages }) => {
         <button onClick={() => document.getElementById("file-input").click()}>
           Upload Image
         </button>
+        <button onClick={() => setIsSearchVisible(true)}>Search Users</button>
+        <div className={`search-bar ${isSearchVisible ? 'open' : ''}`}>
+          <button className="close-search" onClick={() => setIsSearchVisible(false)}>Close</button>
+          <div className="search-results"> {/* New div for wrapping user buttons */}
+            {users.filter(user => user.email !== currentEmail.Email).map((user, index) => (
+              <button key={index} className="user-button">{user.email}</button>
+            ))}
+          </div>
+        </div>
         <button onClick={signOut}>SIGN OUT</button>
       </div>
     );
   }
-  
-  
 
 export default Navbar;

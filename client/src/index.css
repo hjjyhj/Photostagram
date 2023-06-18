@@ -193,16 +193,18 @@ body {
 }
 
 .navbar button {
-  /* margin: 20px 0; */
   width: 100%;
   padding: 10px;
   margin-bottom: 30px;
-  font-family: "Open Sans", sans-serif; /* Make sure you have imported this font */
+  font-family: "Open Sans", sans-serif;
   font-size: 18px;
   color: white;
   background-color: black;
   border: none;
+  cursor: pointer; /* Add this to make cursor pointer */
 }
+
+
 .photo-page {
   margin-left: 200px; /* Add this to move the page content to the right */
 }
@@ -229,7 +231,7 @@ body {
   border-radius: 50%;
   object-fit: cover;
   margin-bottom: 40px;
-  margin-left: 290px;
+  margin-left: 20px;
   border: 2px solid white; /* add this line for the white border */
   background-color: black;
 }
@@ -257,4 +259,59 @@ body {
   font-size: 30px;
   color: #ffffff;
   margin-bottom: 50px;
+}
+
+.search-bar {
+  position: absolute;
+  top: 0;
+  left: -135%;
+  width: 100%;
+  height: 950px; /* Keep this as 950px */
+  background: rgb(0,0,0);
+  color: white;
+  transition: left 0.5s ease-out;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; 
+  padding: 20px;
+  padding-top: 80px; /* Increase this value to increase the gap */
+}
+
+.search-results {
+  width: 100%;
+  height: calc(100% - 80px); /* Adjust the height of the search results, taking into consideration the padding-top */
+  overflow: auto; /* Add this to enable scrolling */
+}
+
+
+.search-bar.open {
+  left: 0;
+}
+
+/* Close button styling */
+.close-search {
+  position: absolute; /* remove the fixed position */
+  top: 10px; /* adjust as needed */
+  right: 10px; /* adjust as needed */
+  background: none;
+  border: none;
+  color: white; /* adjust as needed */
+  font-size: 18px; /* adjust as needed */
+  cursor: pointer;
+}
+
+
+
+/* User button styling */
+.user-button {
+  width: 80%; /* adjust as needed */
+  padding: 10px; /* adjust as needed */
+  background: none;
+  border: 1px solid white; /* adjust as needed */
+  color: white; /* adjust as needed */
+  font-size: 18px; /* adjust as needed */
+  cursor: pointer;
+  word-break: break-word; /* add this line */
 }
